@@ -1,196 +1,76 @@
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <queue>
-#include <vector>
-using namespace std;
+/*
+** feched by JetMuffin's crawler
+** author: chen9434 (JetMuffin)
+** http://acm.hdu.edu.cn/viewcode.php?rid=15481126
+*/
 
-char cb[20][20];
-char s[9];
-typedef struct{
-    int x, y,num;
-    node(int a, int b, int c){
-        x = a;
-        y = b;
-        num = c;
-    }
-    void print(){
-        cout<<x<<" "<<y<<" "<<num<<endl;
-    }
-}node;
-vector <node>w;
-vector <node>b;
-vector <node>temp;
-queue <node>q;
-int flag = 0;
-int vis[20][20];
-int dvis[20][20];
-int dx[4] = {0,1,0,-1};
-int dy[4] = {1,0,-1,0};
-void bfs1(node a){
-    temp.clear();
-    q.push(a);
-    int tot_num = 0;
-    while(!q.empty()){
-        node b = q.front();
-        q.pop();
-        int curx = b.x;
-        int cury = b.y;
-        tot_num += b.num;
-        temp.push_back(b);
-        for(int i = 0; i < 4; i++){
-            int nextx = curx + dx[i];
-            int nexty = cury + dy[i];
-            if(cb[nextx][nexty] == 'x' && !vis[nextx][nexty]){
-                vis[nextx][nexty] = 1;
-                int num = 0;
-                for(int k = 0; k < 4; k++){
-                    if(cb[nextx+dx[k]][nexty+dy[k]] == '.'){
-                        num++;
-                    }
-                }
-                node c;
-                c.x = nextx;
-                c.y = nexty;
-                c.num = num;
-                q.push(c);
-            }
-        }
-    }
-    if(tot_num == 0){
-        int tmp_len = temp.size();
-        for(int i = 0; i < tmp_len; i++){
-            cb[temp[i].x][temp[i].y] = '.';
-        }
-    }
-}
-void bfs2(node a){
-    q.push(a);
-    int tot_num = 0;
-    memset(dvis,0,sizeof(dvis));
-    while(!q.empty() && !flag){
-        node b = q.front();
-        q.pop();
-        int curx = b.x;
-        int cury = b.y;    
-        int num = 0;
-        for(int k = 0; k < 4; k++){
-            if(cb[curx+dx[k]][cury+dy[k]] == '.' && !dvis[curx+dx[k]][cury+dy[k]]){
-                num++;
-                dvis[curx+dx[k]][cury+dy[k]] = 1;
-            }
-        }    
-        tot_num += num;
-        for(int i = 0; i < 4; i++){
-            int nextx = curx + dx[i];
-            int nexty = cury + dy[i];
-            if(cb[nextx][nexty] == 'o' && !vis[nextx][nexty]){
-                vis[nextx][nexty] = 1;
-                int num = 0;
-                node c;
-                c.x = nextx;
-                c.y = nexty;
-                c.num = num;
-                q.push(c);
-            }
-        }
-
-    }
-//    cout<<tot_num<<endl;
-    if(tot_num == 1){
-        flag = 1;
-    }
-}
-void pre(){
-    memset(vis, 0, sizeof(vis));
-    int len = b.size();
-    for(int i = 0; i < len; i++){
-        if(!vis[b[i].x][b[i].y]){
-            bfs1(b[i]);
-        }
-    }
-}
-void cal(){
-    flag = 0;
-    memset(vis, 0, sizeof(vis));    
-    int len = w.size();
-    for(int i = 0; i < len; i++){
-        if(!vis[w[i].x][w[i].y]){
-            bfs2(w[i]);
-        }
-        if(flag) break;
-    }
-}
-void test(){
-    for(int i = 1; i < 10; i++){
-        for(int j = 1; j < 10; j++){
-            cout<<cb[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-    cout<<endl;
-}
-int main(){
-    int cas = 0,T;
-    //freopen("in.txt","r",stdin);
-    scanf("%d",&T);
-    while(T--){
-        cas++;
-        w.clear();
-        b.clear();
-        for(int i = 1; i <= 9; i++){
-            scanf("%s", s);
-            for(int j = 1; j <= 9; j++){
-                cb[i][j] = s[j-1];
-            }
-        }
-        for(int i = 0; i < 11; i++){
-            cb[i][0] = '-';
-            cb[0][i] = '-';
-            cb[i][10] = '-';
-            cb[10][i] = '-';
-        }
-        for(int i = 1; i <= 9; i++){
-            for(int j = 1; j <=9; j++){
-                if(cb[i][j] == 'x'){
-                    int num = 0;
-                    for(int k = 0; k < 4; k++){
-                        if(cb[i+dx[k]][j+dy[k]] == '.'){
-                            num++;
-                        }
-                    }
-                    node bt;
-                    bt.x = i;
-                    bt.y = j;
-                    bt.num = num;
-                    b.push_back(bt);
-                }
-            }
-        }
-        pre();
-        //test();
-        for(int i = 1; i <= 9; i++){
-            for(int j = 1; j <= 9; j++){
-                if(cb[i][j] == 'o'){
-                    int num = 0;
-                    for(int k = 0; k < 4; k++){
-                        if(cb[i+dx[k]][j+dy[k]] == '.'){
-                            num++;
-                        }
-                    }
-                    node wt;
-                    wt.x = i;
-                    wt.y = j;
-                    wt.num = num;
-                    w.push_back(wt);
-                }
-            }
-        }
-        cal();
-        if(flag){
-            printf("Case #%d: Can kill in one move!!!\n", cas);
-        }else{
-            printf("Case #%d: Can not kill in one move!!!\n",cas);
-        }
-    }
+#include<iostream>  
+#include<cstdio>  
+#include<cstdlib>  
+#include<cmath>  
+#include<cstring>  
+#include<vector>  
+#include<queue>  
+#include<set>  
+#include<map>  
+#include<algorithm>  
+#include<sstream>  
+#define clr(k,v) memset(k,v,sizeof(k))  
+#define eps 1e-9  
+#define pi acos(-1)  
+#define INF 0x7fffffff  
+#define inf -INF  
+#define MM 12900  
+#define N 50  
+using namespace std;  
+typedef long long ll;  
+const int _max = 5e3 + 10;  
+  
+char g[20][20];  
+int di[4]={-1,1,0,0};  
+int dj[4]={0,0,1,-1};  
+int cnt,tot;  
+int v[20][20];//给连通块编号  
+  
+void dfs(int x,int y){  
+  v[x][y]=tot;  
+  for(int i = 0; i < 4; ++ i){  
+    int _x = x + di[i];  
+    int _y = y + dj[i];  
+    if(_x<0||_x>=9||_y<0||_y>=9||v[_x][_y]==tot) continue;  
+    if(g[_x][_y]=='x') continue;  
+    if(g[_x][_y]=='.') {cnt++;v[_x][_y]=tot;}//编号：不同连通块可以多次访问，统一连通块只可访问一次  
+    else dfs(_x,_y);  
+  }  
+}  
+  
+int judge(){//连通块  
+  tot = 0;int tar = 0;  
+  for(int i = 0; i < 9; ++ i)  
+    for(int j = 0; j < 9; ++ j){  
+       if(g[i][j]=='o'&&!v[i][j]) {  
+          tot++;//从1开始给连通块编号  
+          cnt = 0;//连通块周围'.'的个数  
+          dfs(i,j);  
+          if(cnt==1) return 1;  
+       }  
+    }  
+  return 0;  
+}  
+  
+int main(){  
+#ifndef ONLINE_JUDGE  
+  freopen("input.txt","r",stdin);  
+#endif // ONLINE_JUDGE  
+  int T;cin>>T;int kase = 1;  
+  char s[10];  
+  getchar();  
+  while(T--){  
+    gets(s);  
+    for(int i = 0; i < 9; ++ i) scanf("%s",g[i]);  
+    clr(v,0);  
+    printf("Case #%d: ",kase++);  
+    puts(judge()?"Can kill in one move!!!":"Can not kill in one move!!!");  
+  }  
+  return 0;  
 }

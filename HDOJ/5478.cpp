@@ -1,48 +1,57 @@
-#include <iostream>
-#include <cstdio>
-using namespace std;
-#define LL long long
-const int maxn =200010;
-LL a[maxn];
-LL b[maxn];
-LL t[maxn];
-LL pow_mod(LL a,LL b,LL mod)  
+/*
+** feched by JetMuffin's crawler
+** author: chen9434 (JetMuffin)
+** http://acm.hdu.edu.cn/viewcode.php?rid=14945226
+*/
+
+#include <stdio.h>  
+#include <math.h>  
+#include <stdlib.h>  
+#include <time.h>  
+typedef long long LL;  
+LL C,k1,k2,b1;  
+LL poww(LL a,LL b)  
 {  
     LL res=a,ans = 1 ;  
     while(b)  
     {  
-        if(b&1) ans = (ans*res)%mod ;  
+        if(b&1) ans = (ans*res)%C ;  
         b>>=1 ;  
-        res= (res*res)%mod ;  
+        res= (res*res)%C ;  
     }  
-    return ans%mod;  
+    return ans%C;  
 }  
-int main(){
-    int c,k1,b1,k2;
-    int cnt = 0;
-    //freopen("in.txt","r",stdin);
-    while(~scanf("%d%d%d%d",&c,&k1,&b1,&k2)){
-        cnt++;
-        printf("Case #%d:\n", cnt);
-        // for(int i = 1 ; i < maxn; i++){
-        //     a[i] = pow_mod(i, k1, c);
-        //     b[i] = pow_mod(i, k2, c);
-        // }
-        int flag = 1;
-        for(int i = 1; i < c; i++){
-            int t = pow_mod(i, b1+k1, c);
-            int bb = c-t;
-            if(bb <= 0) continue;
-            LL x1 = pow_mod(i, k1, c);
-            LL x2 = pow_mod(bb, k2, c);
-//            cout<<i<<" "<<bb<<" "<<x1<<" "<<x2<<endl;
-            if(x1 == x2){
-                flag = 0;
-                printf("%d %d\n", i,bb);
-            }
-        }
-        if(flag){
-            puts("-1");
-        }
-    }
-}
+int main()  
+{  
+    LL tot = 1;  
+    while(scanf("%lld %lld %lld %lld",&C,&k1,&b1,&k2)!=EOF)  
+    {  
+        printf("Case #%d:\n",tot++);  
+        LL s = 0;  
+        for(LL i = 1; i<C; i++) ///枚举a  
+        {  
+            bool ok = true;  
+            LL  b = C - poww(i,k1+b1); ///求b  
+            if(b<=0) continue;  
+            for(LL n =3000 ; n<=3500; n++) ///筛选  
+            {  
+                LL rr = n;  
+                if(((LL)poww(i,k1*rr+b1)+(LL)poww(b,k2*rr-k2+1))%C!=0)  
+                {  
+                    ok = false;  
+                    break;  
+                }  
+            }  
+            if(ok)  
+            {  
+                printf("%lld %lld\n",i,b);  
+                s++;  
+            }  
+        }  
+        if(!s) ///无解！  
+        {  
+            puts("-1");  
+        }  
+    }  
+    return 0;  
+}  

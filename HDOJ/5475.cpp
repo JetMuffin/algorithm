@@ -1,3 +1,9 @@
+/*
+** feched by JetMuffin's crawler
+** author: chen9434 (JetMuffin)
+** http://acm.hdu.edu.cn/viewcode.php?rid=14948137
+*/
+
 #include <iostream>
 #include <cstdio>
 #include <cstring>

@@ -1,3 +1,9 @@
+/*
+** feched by JetMuffin's crawler
+** author: chen9434 (JetMuffin)
+** http://acm.hdu.edu.cn/viewcode.php?rid=14887655
+*/
+
 #pragma comment(linker, "/STACK:1024000000,1024000000")  
 #include<cstdio>  
 #include<cstring>  
