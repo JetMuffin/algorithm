@@ -4,42 +4,35 @@
 ** http://acm.hdu.edu.cn/viewcode.php?rid=11123156
 */
 
-#include<iostream>
+#include <iostream>
 using namespace std;
-int extgcd(int a,int b,int &x,int &y)
-{
-    if(b==0)
-    {
-        x=1;
-        y=0;
-        return a;
-    }
-    int r = extgcd(b,a%b,x,y);
-    int t = x;
-    x = y;
-    y = t - a/b*y;
-    return r;
+const int mod = 9973;
+
+int extgcd(int a, int b, int &x, int &y) {
+  if(b == 0) {
+	x = 1;
+	y = 0;
+	return a;
+  }
+  int d = extgcd(b, a%b, y, x);
+  y -= a/b*x;
+  return d;
 }
-int cal(int a,int b,int c)  
-{  
-    int x,y;  
-    int gcd=extgcd(a,b,x,y);  
-    if(c%gcd!=0) return -1;  
-    x*=c/gcd;  
-    b/=gcd;  
-    if(b<0) b=-b;   
-    int ans=x%b;  
-    if(ans<=0) ans+=b;  
-    return ans;  
-}  
-int main()
-{
-    int T,n,B,ans;
-    cin>>T;
-    while(T--)
-    {
-        cin>>n>>B;
-        ans = cal(B,9973,n);
-        cout<<ans<<endl;
-    }
-} 
+
+int reverse(int a, int n) {
+  int x, y;
+  int d = extgcd(a, n, x, y);
+  if (d == 1) return (x%n+n)%n;
+  else return -1;
+}
+
+int main() {
+  int t;
+  int n, b;
+  scanf("%d", &t);
+  while(t--) {
+	scanf("%d%d", &n, &b);
+	int x = reverse(b, mod);
+	printf("%d\n", n*x%mod);
+  }
+}
