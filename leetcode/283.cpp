@@ -5,31 +5,27 @@ using namespace std;
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-		vector<int> res;
 		int size = nums.size();
-		int count = 0;
-		for(int i = 0; i < size; i++) {
-			if(nums[i] != 0) 
-				res.push_back(nums[i]);
-			else
-				count++;
-		}        
-		for(int i = 0 ; i < count; i++) {
-			res.push_back(0);
-		}
+        int idx = 0;
+        for(int i = 0; i < size; i++) {
+            if(nums[i]) {
+                nums[idx ++] = nums[i];
+            }
+        }
+        for(int i = idx; i < size; i++) {
+            nums[i] = 0;
+        }
     }
 };
 
+int a[5] = {0, 1, 0, 3, 2};
 int main() {
-	int n, t;
-	cin>>n;
 	vector<int> nums;
-	for(int i = 0 ; i < n; i++) {
-		cin>>t;
-		nums.push_back(t);
-	}
-	Solution test;
-	test.moveZeroes(nums);
+	for(int i = 0 ; i <5 ; i++) {
+        nums.push_back(a[i]);
+    }
+    Solution s;
+	s.moveZeroes(nums);
 	for(int i = 0 ; i < nums.size(); i++) {
 		cout<<nums[i]<<" ";
 	}
