@@ -3,32 +3,44 @@
 #include <cstring>
 #include <map>
 #include <vector>
+#include <string>
 using namespace std;
 const int maxn = 2000;
 int pre[maxn];
-bool tag[maxn];
+int tag[maxn];
+int tot = 0;
+map<string, int> names;
+map<int, string> ids;
+int hashx(string name) {
+	if(!names.count(name)) {
+		tot++;
+		names[name] = tot;
+		ids[tot] = name;
+		return tot;
+	} else {
+		return names[name];	
+	}
+}
+void dfs(int x) {
+	tag[x] = 1;
+	if(pre[x] == 0) return;
+	dfs(pre[x]);
+}
+int dfs2(int x) {
+	if(tag[x] == 1) return x;
+	if(pre[x] == 0) return -1;
+	if(tag[pre[x]] == 1) return pre[x];
+	dfs2(pre[x]);
+}
 int main() {
 	int n, q;
 	string a, b;
 	scanf("%d", &n);
-	int cnt = 1;
-	map<string, int> names;
-	map<int, string> ids;
-	for(int i = 0; i < n; i++) pre[i] = -1;		
+	memset(pre, 0, sizeof(pre));
+
 	for(int i = 0; i < n; i++) {
 		cin>>a>>b;
-		if(names[a] == 0) {
-			names[a] = cnt;
-			ids[cnt] = a;
-			cnt++;
-		}
-		if(names[b] == 0) {
-			names[b] = cnt;
-			ids[cnt] = b;
-			cnt++;
-		}
-
-		pre[names[b]] = names[a];
+		pre[hashx(b)] = hashx(a);
 	}
 
 	scanf("%d", &q);
@@ -36,18 +48,14 @@ int main() {
 		memset(tag, 0, sizeof(tag));
 		cin>>a>>b;
 
-		int c = names[a];
-		int d = names[b];
+		int c = hashx(a);
+		int d = hashx(b);
 
-		while(c != -1) {
-			tag[c] = true;
-			c = pre[c];
-		}
+		dfs(c);	
 
-		while(d != -1 && !tag[d]) d = pre[d];
-
-		if(d != -1) {
-			cout<<ids[d]<<endl;
+		int ans = dfs2(d);
+		if(ans != -1) {
+			cout<<ids[ans]<<endl;
 		} else {
 			cout<<-1<<endl;
 		}
